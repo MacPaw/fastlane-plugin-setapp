@@ -50,7 +50,7 @@ upload_setapp_build(
   build_path: '...', # The path to archive with a new Setapp build
   release_notes: '...', # Text or path to a file that contains release notes for a new version
   version_status: 'review', # Version status. It can be `draft` or `review`
-  release_on_approval: 'true' # Indicates whether Setapp must publish a new version after review
+  release_on_approval: true # Indicates whether Setapp must publish a new version after review
 )
 ```
 
