@@ -12,7 +12,6 @@ module Fastlane
         release_on_approval = params[:release_on_approval]
         file_dir = File.dirname(__FILE__)
         UI.user_error!("Available options for version_status: [draft, review].") unless ['draft', 'review'].include?(version_status)
-        UI.user_error!("Available options for release_on_approval: [true, false].") unless ['true', 'false'].include?(release_on_approval)
         UI.message("The build at path #{build_path} will be uploaded to Setapp")
         exit_code = system("bash #{file_dir}/../helper/setapp_build_uploader.sh --token #{api_token} --path #{build_path} --notes #{release_notes} --status #{version_status} --release-on-approval #{release_on_approval}")
         UI.user_error!("Uploading error occured. Try again.") if exit_code != true
@@ -73,7 +72,7 @@ module Fastlane
             env_name: "SETAPP_RELEASE_ON_APPROVAL",
             description: "Indicate whether Setapp must release new version automatically after review. Available options: `true`, `false`",
             optional: false,
-            type: String
+            type: Boolean
           )
         ]
       end
