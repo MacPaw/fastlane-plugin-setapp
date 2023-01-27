@@ -99,7 +99,7 @@ function validate_server_response() {
     local response_code=${server_response##*HTTPSTATUS:}
     local response_body=$(echo ${server_response%%HTTPSTATUS*})
 
-    if [ $response_code -eq 202 ]; then
+    if [ "$response_code" -ge 200 ] && [ "$response_code" -lt 300 ]; then
         echo "✅ The app version is uploaded. All checks are passed."
     elif [ $response_code -eq 401 ]; then
         die "⚠️ Something went wrong with your API token.\n${response_body}"
