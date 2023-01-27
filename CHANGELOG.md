@@ -6,6 +6,15 @@
 
 #### Fixed
 
+## 0.1.2 (Jan, 27 2023)
+
+#### New
+
+#### Updated
+* Changed success uploading status code to range 200..<300.
+
+#### Fixed
+
 ## 0.1.1 (Jan, 20 2023)
 
 #### New
