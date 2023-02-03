@@ -6,6 +6,13 @@
 
 #### Fixed
 
+## 0.1.3 (Feb, 3 2023)
+
+#### New
+
+#### Updated
+* Add support for beta versions uploading via plugin and script.
+
 ## 0.1.2 (Jan, 27 2023)
 
 #### New
