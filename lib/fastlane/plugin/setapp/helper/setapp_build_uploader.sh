@@ -35,6 +35,10 @@ function help() {
             Indicate whether Setapp must publish a new version automatically after review approval.
             Available options: (true/false)
 
+        -b | --beta
+            Is beta or stable build.
+            Available options: (true/false)
+
         -h, --help
             Usage help
     "
@@ -79,6 +83,11 @@ function parse_params() {
                     release_on_approval="${1}"
                 fi
                 shift;;
+            -b | --beta)
+                if test $# -gt 0; then
+                    beta="${1}"
+                fi
+                shift;;
             *)
                 die "Invalid parameter was provided: $param" 1
                 ;;
@@ -92,6 +101,7 @@ function check_parameters() {
     [[ -z "${release_notes}" ]] && die "Missing required parameter: release-notes"
     [[ -z "${version_status}" ]] && die "Missing required parameter: version-status"
     [[ -z "${release_on_approval}" ]] && die "Missing required parameter: release-on-approval"
+    [[ -z "${beta}" ]] && die "Missing required parameter: beta"
 }
 
 function validate_server_response() {
@@ -120,6 +130,7 @@ function upload_binary() {
         -F "release_notes=${release_notes}" \
         -F "status=${version_status}" \
         -F "release_on_approval=${release_on_approval}" \
+        -F "beta=${beta}" \
         -F "archive=@${archive_path};type=application/zip"
     )
     validate_server_response "${response}"
