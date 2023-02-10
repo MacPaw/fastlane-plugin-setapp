@@ -9,20 +9,21 @@ module Fastlane
         build_path = params[:build_path]
         release_notes = params[:release_notes]
         version_status = params[:version_status]
-        release_on_approval = params[:release_on_approval]
-        is_beta = params[:is_beta]
+        release_on_approval = params[:release_on_approval] ? "true" : "false"
+        is_beta = params[:is_beta] ? "true" : "false"
         file_dir = File.dirname(__FILE__)
         UI.user_error!("Available options for version_status: [draft, review].") unless ['draft', 'review'].include?(version_status)
         UI.message("The build at path #{build_path} will be uploaded to Setapp")
-        exit_code = system("
-          bash #{file_dir}/../helper/setapp_build_uploader.sh \
-            --token #{api_token} \
-            --path #{build_path} \
-            --notes #{release_notes} \
-            --status #{version_status} \
-            --release-on-approval #{release_on_approval} \
-            --beta #{is_beta}
-        ")
+        script_path = "#{file_dir}/../helper/setapp_build_uploader.sh"
+        exit_code = system(
+          "bash", script_path,
+          "--token", api_token,
+          "--path", build_path,
+          "--notes", release_notes,
+          "--status", version_status,
+          "--release-on-approval", release_on_approval,
+          "--beta", is_beta
+        )
         UI.user_error!("Uploading error occured. Try again.") if exit_code != true
       end
 
