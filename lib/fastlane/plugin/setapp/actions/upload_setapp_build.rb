@@ -5,24 +5,26 @@ module Fastlane
   module Actions
     class UploadSetappBuildAction < Action
       def self.run(params)
-        api_token = params[:api_token]
+        automation_token = params[:automation_token]
         build_path = params[:build_path]
         release_notes = params[:release_notes]
         version_status = params[:version_status]
         release_on_approval = params[:release_on_approval] ? "true" : "false"
         is_beta = params[:is_beta] ? "true" : "false"
+        allow_overwrite = params[:allow_overwrite] ? "true" : "false"
         file_dir = File.dirname(__FILE__)
         UI.user_error!("Available options for version_status: [draft, review].") unless ['draft', 'review'].include?(version_status)
         UI.message("The build at path #{build_path} will be uploaded to Setapp")
         script_path = "#{file_dir}/../helper/setapp_build_uploader.sh"
         exit_code = system(
           "bash", script_path,
-          "--token", api_token,
+          "--token", automation_token,
           "--path", build_path,
           "--notes", release_notes,
           "--status", version_status,
           "--release-on-approval", release_on_approval,
-          "--beta", is_beta
+          "--beta", is_beta,
+          "--allow-overwrite", allow_overwrite
         )
         UI.user_error!("Uploading error occured. Try again.") if exit_code != true
       end
@@ -49,9 +51,9 @@ module Fastlane
       def self.available_options
         [
           FastlaneCore::ConfigItem.new(
-            key: :api_token,
-            env_name: "SETAPP_API_TOKEN",
-            description: "Your Setapp API token",
+            key: :automation_token,
+            env_name: "SETAPP_AUTOMATION_TOKEN",
+            description: "Your Setapp Automation token",
             optional: false,
             sensitive: true,
             type: String
@@ -88,6 +90,14 @@ module Fastlane
             key: :is_beta,
             env_name: "SETAPP_BUILD_IS_BETA",
             description: "Is beta or stable build. Available options: `true`, `false`",
+            optional: false,
+            default_value: false,
+            type: Boolean
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :allow_overwrite,
+            env_name: "SETAPP_ALLOW_OVERWRITE",
+            description: "Can overwrite existing version or not. Applies to all statuses except `Approved`. Available options: `true`, `false`",
             optional: false,
             default_value: false,
             type: Boolean

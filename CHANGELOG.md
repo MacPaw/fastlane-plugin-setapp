@@ -1,8 +1,10 @@
 ## Develop
 
 #### New
+- Add allow_overwrite parameter support.
 
 #### Updated
+- Rename Setapp API token to Setapp Automation token.
 
 #### Fixed
 

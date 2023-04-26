@@ -46,12 +46,13 @@ Uploads new version to Setapp and save it as a draft or send to a review process
 
 ```ruby
 upload_setapp_build(
-  api_token: '...', # Your Setapp API token
+  automation_token: '...', # Your Setapp Automation token
   build_path: '...', # The path to archive with a new Setapp build
   release_notes: '...', # Text or path to a file that contains release notes for a new version
   version_status: 'review', # Version status. It can be `draft` or `review`
   release_on_approval: true, # Indicates whether Setapp must publish a new version after review
-  is_beta: false # Is beta or stable build
+  is_beta: false, # Is beta or stable build
+  allow_overwrite: true # Allow to overwrite existing version
 )
 ```
 
