@@ -1,6 +1,14 @@
 ## Develop
 
 #### New
+
+#### Updated
+
+#### Fixed
+
+## 0.2.0 (MayFeb, 10 2023)
+
+#### New
 - Add allow_overwrite parameter support.
 
 #### Updated
