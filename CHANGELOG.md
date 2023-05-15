@@ -6,6 +6,16 @@
 
 #### Fixed
 
+## 0.2.0 (MayFeb, 10 2023)
+
+#### New
+- Add allow_overwrite parameter support.
+
+#### Updated
+- Rename Setapp API token to Setapp Automation token.
+
+#### Fixed
+
 ## 0.1.3 (Feb, 3 2023)
 
 #### New

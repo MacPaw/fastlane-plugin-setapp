@@ -18,12 +18,12 @@ function help() {
 
     OPTIONS
         -t, --token
-            Your Setapp token for continious integration. 
+            Your Setapp Automation token for continious integration. 
 
         -p, --path
             Path to an archive with a new bundle version.
 
-        -n, -notes
+        -n, --notes
             Release notes for a new version. Add them as a plain text or as a path to file with text.
 
         -s, --status
@@ -37,6 +37,10 @@ function help() {
 
         -b | --beta
             Is beta or stable build.
+            Available options: (true/false)
+        
+        -a | --allow-overwrite
+            Can ovewrite existing version, including release notes and archive. 
             Available options: (true/false)
 
         -h, --help
@@ -57,7 +61,7 @@ function parse_params() {
                 ;;
             -t | --token)
                 if test $# -gt 0; then
-                    api_token="${1}"
+                    automation_token="${1}"
                 fi
                 shift;;
             -p | --path)
@@ -88,6 +92,11 @@ function parse_params() {
                     beta="${1}"
                 fi
                 shift;;
+            -a| --allow-overwrite)
+                if test $# -gt 0; then
+                    allow_overwrite="${1}"
+                fi
+                shift;;
             *)
                 die "Invalid parameter was provided: $param" 1
                 ;;
@@ -96,12 +105,13 @@ function parse_params() {
 }
 
 function check_parameters() {
-    [[ -z "${api_token}" ]] && die "Missing required parameter: api-token"
-    [[ -z "${archive_path}" ]] && die "Missing required parameter: archive-path"
-    [[ -z "${release_notes}" ]] && die "Missing required parameter: release-notes"
-    [[ -z "${version_status}" ]] && die "Missing required parameter: version-status"
+    [[ -z "${automation_token}" ]] && die "Missing required parameter: token"
+    [[ -z "${archive_path}" ]] && die "Missing required parameter: path"
+    [[ -z "${release_notes}" ]] && die "Missing required parameter: notes"
+    [[ -z "${version_status}" ]] && die "Missing required parameter: status"
     [[ -z "${release_on_approval}" ]] && die "Missing required parameter: release-on-approval"
     [[ -z "${beta}" ]] && die "Missing required parameter: beta"
+    [[ -z "${allow_overwrite}" ]] && die "Missing required parameter: allow-ovewrite"
 }
 
 function validate_server_response() {
@@ -112,7 +122,7 @@ function validate_server_response() {
     if [ "$response_code" -ge 200 ] && [ "$response_code" -lt 300 ]; then
         echo "✅ The app version is uploaded. All checks are passed."
     elif [ $response_code -eq 401 ]; then
-        die "⚠️ Something went wrong with your API token.\n${response_body}"
+        die "⚠️ Something went wrong with your Setapp Automation token.\n${response_body}"
     elif [ $response_code -eq 400 ]; then
         die "🚨 Bundle validation error occured. See details in description below.\n${response_body}"
     else 
@@ -120,17 +130,18 @@ function validate_server_response() {
     fi
 }
 
-function upload_binary() {
+function create_or_overwrite_existing_app_version() {
     response=$(
         curl -X POST "https://developer-api.setapp.com/v1/ci/version" \
         --write-out "HTTPSTATUS:%{http_code}" \
-        -H "Authorization: Bearer ${api_token}" \
+        -H "Authorization: Bearer ${automation_token}" \
         -H "accept: application/json" \
         -H "Content-Type: multipart/form-data" \
         -F "release_notes=${release_notes}" \
         -F "status=${version_status}" \
         -F "release_on_approval=${release_on_approval}" \
         -F "beta=${beta}" \
+        -F "allow_overwrite=${allow_overwrite}" \
         -F "archive=@${archive_path};type=application/zip"
     )
     validate_server_response "${response}"
@@ -139,7 +150,7 @@ function upload_binary() {
 function main() {
     parse_params "$@"
     check_parameters
-    upload_binary
+    create_or_overwrite_existing_app_version
 }
 
 main "$@"
